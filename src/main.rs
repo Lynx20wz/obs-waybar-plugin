@@ -3,27 +3,23 @@ use obws::{Client, requests::sources::SourceId};
 use std::env::args;
 
 fn main() {
-    let args: Vec<String> = args().collect();
-    let mute_source = args.get(1).expect("Mute source is not provided!");
+    let mute_source: Option<String> = args().nth(1);
 
-    let text: Result<String, _> = trpl::block_on(async {
-        let client: Client = match Client::connect("127.0.0.1", 4455, Some("")).await {
-            Ok(client) => client,
-            Err(e) => return Err(e),
-        };
+    let text: Result<String, obws::error::Error> = trpl::block_on(async {
+        let client: Client = Client::connect("127.0.0.1", 4455, Some("")).await?;
 
         let current_scene = get_current_scene(&client).await?;
-        let is_muted = is_black_screen_muted(&client, mute_source).await?;
+        let is_muted = is_black_screen_muted(&client, mute_source.as_deref()).await?;
 
         let mut output = current_scene;
         if is_muted {
             output.push_str(" (muted)");
         }
 
-        Ok(format!("{}", output))
+        Ok(output)
     });
 
-    println!("{}", text.unwrap_or("".to_string()).capitalize());
+    println!("{}", text.unwrap_or_default().capitalize());
 }
 
 async fn get_current_scene(client: &Client) -> Result<String, obws::error::Error> {
@@ -34,10 +30,14 @@ async fn get_current_scene(client: &Client) -> Result<String, obws::error::Error
 
 async fn is_black_screen_muted(
     client: &Client,
-    mute_source: &str,
+    mute_source: Option<&str>,
 ) -> Result<bool, obws::error::Error> {
-    let sources = client.sources();
-    let black_screen_id = SourceId::from(mute_source);
-    let is_muted = sources.active(black_screen_id).await?.active;
-    Ok(is_muted)
+    if let Some(mute_source) = mute_source {
+        let sources = client.sources();
+        let black_screen_id = SourceId::from(mute_source);
+        let is_muted = sources.active(black_screen_id).await?.active;
+        Ok(is_muted)
+    } else {
+        Ok(false)
+    }
 }
