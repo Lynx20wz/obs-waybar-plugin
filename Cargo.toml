@@ -1,11 +1,9 @@
 [package]
 name = "obs-waybar-plugin"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.104"
 capitalize = "0.3.4"
 obws = "0.15.0"
-tokio = "1.53.1"
 trpl = "0.3.0"
