@@ -24,32 +24,23 @@ jobs:
 
   build:
     needs: prepare
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            ext: ""
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            ext: ".exe"
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: x86_64-unknown-linux-gnu
 
       - name: Build
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target x86_64-unknown-linux-gnu
 
       - name: Upload to Release
-        uses: softprops/action-gh-release@v2.2.0
+        uses: softprops/action-gh-release@v2
         with:
           name: v${{ needs.prepare.outputs.version}}
           tag_name: v${{ needs.prepare.outputs.version}}
-          files: target/${{ matrix.target }}/release/obs-waybar-plugin${{ matrix.ext }}
+          files: target/x86_64-unknown-linux-gnu/release/obs-waybar-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
