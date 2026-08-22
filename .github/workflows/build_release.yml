@@ -3,6 +3,10 @@ name: Build and Release
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
 
 permissions:
   contents: write
