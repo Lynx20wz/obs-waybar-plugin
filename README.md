@@ -20,19 +20,19 @@ Screen scene (muted)
 
 ## Usage
 
-1. Turn on the OBS websocket server
+### Turn on the OBS websocket server
 
    - Open OBS
    - Go to `Tools` > `Websocket Server`
    - Mark `Enable Websocket Server`
 
-2. Install the plugin
+### Install the plugin
 
-### From releases
+#### From releases
 
 You can install the plugin from the [releases page](https://github.com/lynx20wz/obs-waybar-plugin/releases/latest).
 
-### From source
+#### From source
 
 Also, you can build the plugin from source.
 
@@ -44,7 +44,7 @@ cd obs-waybar-plugin
 cargo build --release
 ```
 
-### From package manager
+#### From package manager
 
 AUR Soon!
 
@@ -58,16 +58,25 @@ sudo mv target/release/obs-waybar-plugin /.local/bin/
 sudo ln -s target/release/obs-waybar-plugin /.local/bin/
 ```
 
-3. Add the following to your Waybar config file:
+### Add the following to your Waybar config file:
 
 ```jsonc
 "custom/obs": {
-    "exec": "<path to obs-waybar-plugin> [name of blur source]",
+    "exec": "<path to obs-waybar-plugin> -b [name of blur source]",
     "interval": 1 # or any other interval you prefer
+    "return-type": "json"
 }
 ```
 
 Note: if you don't specify a blur source, the plugin will only show the name of the current scene.
+
+### Arguments
+
+- `-b`: Specify the name of the blur source to use.
+- `-p`: Specify the password from OBS websocket server.
+- `-a`: Specify the address of the OBS websocket server.
+- `-P`: Specify the port of the OBS websocket server.
+- `-h`: Shows the help message.
 
 ## TODO
 
